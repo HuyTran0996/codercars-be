@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-// const slugify = require("slugify");
 
 const carSchema = new mongoose.Schema({
   make: {
     type: String,
     required: [true, "A car must have a maker"],
-    unique: true,
+    unique: false,
   },
   model: {
     type: String,

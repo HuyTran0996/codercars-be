@@ -1,33 +1,5 @@
-const csv = require("csvtojson");
+const { query } = require("express");
 const Car = require("./../models/carModel");
-
-// const fs = require("fs");
-// const databe = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/db.json`));
-
-const checkData = async (req, res, next) => {
-  // if (databe.data.length === 0) {
-  //   try {
-  //     let dataFromCsv = await csv().fromFile(
-  //       `${__dirname}/../dev-data/data.csv`
-  //     );
-
-  //     databe.data = dataFromCsv;
-  //     databe.totalCars = databe.data.length;
-
-  //     fs.writeFileSync(
-  //       `${__dirname}/../dev-data/db.json`,
-  //       JSON.stringify(databe)
-  //     );
-  //   } catch (error) {
-  //     console.log("Failed to create cars:", error);
-  //     return res.status(404).json({
-  //       status: "fail",
-  //       message: error,
-  //     });
-  //   }
-  // }
-  next();
-};
 
 const getCars = async (req, res) => {
   try {
@@ -99,8 +71,12 @@ const deleteCar = async (req, res) => {
   }
 };
 
+const page = req.query.page * 1 || 1;
+const limit = req.query.limit * 1 || 10;
+const skip = (page - 1) * limit;
+query = query.skip(skip).limit(limit);
+const cars = await query;
 module.exports = {
-  checkData,
   getCars,
   createCar,
   editCar,
