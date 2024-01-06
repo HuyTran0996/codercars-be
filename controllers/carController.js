@@ -1,15 +1,17 @@
-const { query } = require("express");
 const Car = require("./../models/carModel");
+const APIFeatures = require("./../utils/apiFeatures");
 
 const getCars = async (req, res) => {
   try {
-    const cars = await Car.find();
+    const features = new APIFeatures(Car.find(), req.query).paginate();
+
+    const cars = await features.query;
 
     res.status(200).json({
       message: "Get Car List Successfully!",
       cars: cars,
-      page: "chua lam",
-      total: "chua lam total pages",
+      page: req.query.page,
+      total: (cars.length * 1) / 10,
       totalcars: cars.length,
     });
   } catch (error) {
@@ -71,11 +73,6 @@ const deleteCar = async (req, res) => {
   }
 };
 
-const page = req.query.page * 1 || 1;
-const limit = req.query.limit * 1 || 10;
-const skip = (page - 1) * limit;
-query = query.skip(skip).limit(limit);
-const cars = await query;
 module.exports = {
   getCars,
   createCar,
