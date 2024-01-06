@@ -6,13 +6,12 @@ const getCars = async (req, res) => {
     const features = new APIFeatures(Car.find(), req.query).paginate();
 
     const cars = await features.query;
+    const totalCars = await Car.find();
+    const totalPages = Math.ceil(totalCars.length / 10);
 
     res.status(200).json({
       message: "Get Car List Successfully!",
-      cars: cars,
-      page: req.query.page,
-      total: (cars.length * 1) / 10,
-      totalcars: cars.length,
+      data: { cars, total: totalPages, page: req.query.page },
     });
   } catch (error) {
     return res.status(404).json({
